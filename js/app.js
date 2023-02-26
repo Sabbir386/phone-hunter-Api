@@ -35,8 +35,10 @@ const displayPhones= (phones,dataLimit) =>{
                       <img src="${phone.image}" class="card-img-top" alt="...">
                       <div class="card-body">
                         <h5 class="card-title">${phone.phone_name}</h5>
-                        <p class="card-text">${phone.slug}</p>
-                      </div>
+                        <p class="card-text">Sabbir Phone Gallery </p>
+                        <a onclick="loadPhoneDetails('${phone.slug}')" href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#phoneDetailModal">Show-Details</a>
+                        </div>
+                      
                     </div>
         `
         phonesContainer.appendChild(phoneDiv);
@@ -55,6 +57,13 @@ const displayPhones= (phones,dataLimit) =>{
 document.getElementById('btn-search').addEventListener('click', function(){
     processSearch(10);
 })
+//search input field enter key handler
+document.getElementById('search-field').addEventListener('keypress', function(e){
+    if(e.key==='Enter'){
+        processSearch(10);
+    }
+    
+})
 
 const toggleSpinner= isLoading =>{
     const loaderSection=document.getElementById('loader');
@@ -72,4 +81,23 @@ document.getElementById('btn-show-all').addEventListener('click',function(){
     processSearch();
 })
 
-// loadPhones();
+const loadPhoneDetails= async (id) =>{
+    const url=` https://openapi.programming-hero.com/api/phone/${id}`;
+    const res=await fetch (url);
+    const data=await res.json();
+    displayPhoneDetails(data.data);
+}
+
+const displayPhoneDetails= phone=>{
+console.log(phone)
+const modalTitle=document.getElementById('exampleModalLabel');
+modalTitle.innerText=phone.name;
+const phoneDetails=document.getElementById('phone-Details');
+phoneDetails.innerHTML=`
+<p>Release Date : ${phone.releaseDate ? phone.releaseDate :"No Phone Found"}</p>
+<p>Storage : ${phone.mainFeatures ? phone.mainFeatures.storage :"No Storage"}</p>
+ 
+`
+}
+
+loadPhones('apple');
